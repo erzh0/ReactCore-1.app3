@@ -1,102 +1,98 @@
-import React, { Component } from "react";
+/* eslint-disable indent */
+import React, { Component } from 'react'
 
-import NewTaskForm from "../new-task-form";
-import TaskList from "../task-list";
-import Footer from "../footer";
+import NewTaskForm from '../new-task-form'
+import TaskList from '../task-list'
+import Footer from '../footer'
 
-import "./app.css";
+import './app.css'
 
 export default class App extends Component {
-  maxId = 100;
+  maxId = 100
   state = {
-    taskList: [
-      this.createTask('Completed task'),
-      this.createTask('Editing task'),
-      this.createTask('Active task')
-    ],
-    filter: 'all'
+    taskList: [this.createTask('Completed task'), this.createTask('Editing task'), this.createTask('Active task')],
+    filter: 'all',
   }
 
-  filter (list, filter) {
+  filter(list, filter) {
     switch (filter) {
-      case 'all': 
-        return list;
+      case 'all':
+        return list
       case 'active':
-        return list.filter(el => !el.completed);
+        return list.filter((el) => !el.completed)
       case 'completed':
-        return list.filter(el => el.completed);
-      default: 
-        return list;
+        return list.filter((el) => el.completed)
+      default:
+        return list
     }
   }
 
   onFilterChange = (filter) => {
-    this.setState({filter});
+    this.setState({ filter })
   }
 
   clearCompleted = () => {
-    this.setState(({taskList}) => {
-      const newArr = taskList.filter(el => !el.completed);
+    this.setState(({ taskList }) => {
+      const newArr = taskList.filter((el) => !el.completed)
       return {
-        taskList: newArr
+        taskList: newArr,
       }
-    });
+    })
   }
 
-  createTask (label) {
+  createTask(label) {
     return {
-      label: label,
+      label,
       id: this.maxId++,
       timeNow: Date.now(),
-      completed: false
+      completed: false,
     }
-  } 
+  }
 
   addTask = (label) => {
-    this.setState(({taskList}) => {
-      const newArr = [...taskList, this.createTask(label)];
+    this.setState(({ taskList }) => {
+      const newArr = [...taskList, this.createTask(label)]
       return {
-        taskList: newArr
+        taskList: newArr,
       }
-    });
+    })
   }
 
   taskStatus = (id) => {
-    this.setState(({taskList}) => {
-      const indx = taskList.findIndex(el => el.id === id);
-      let completed = taskList[indx].completed;
+    this.setState(({ taskList }) => {
+      const indx = taskList.findIndex((el) => el.id === id)
+      let completed = taskList[indx].completed
 
       const newArr = taskList.map((task, i) => {
-        const newTask = {...task};
-        if(i === indx) {
-          newTask.completed = !completed;
+        const newTask = { ...task }
+        if (i === indx) {
+          newTask.completed = !completed
         }
-        return newTask;
-      });
+        return newTask
+      })
 
       return {
-        taskList: newArr
+        taskList: newArr,
       }
-    });
+    })
   }
 
   deleteTask = (id) => {
-    this.setState(({taskList}) => {
-      const indx = taskList.findIndex(el => el.id === id);
-      const newArr = [...taskList.slice(0, indx), ...taskList.slice(indx + 1)];
+    this.setState(({ taskList }) => {
+      const indx = taskList.findIndex((el) => el.id === id)
+      const newArr = [...taskList.slice(0, indx), ...taskList.slice(indx + 1)]
       return {
-        taskList: newArr
+        taskList: newArr,
       }
-    });
+    })
   }
 
-  render () {
-    
-    const {taskList, filter} = this.state;
+  render() {
+    const { taskList, filter } = this.state
 
-    const numLeft = taskList.length - taskList.filter(el => el.completed).length;
+    const numLeft = taskList.length - taskList.filter((el) => el.completed).length
 
-    const visibleItems = this.filter(taskList, filter);
+    const visibleItems = this.filter(taskList, filter)
 
     return (
       <section className="todoapp">
@@ -105,17 +101,19 @@ export default class App extends Component {
           <NewTaskForm onAdded={(label) => this.addTask(label)} />
         </header>
         <section className="main">
-          <TaskList 
-            todos={visibleItems} 
+          <TaskList
+            todos={visibleItems}
             onCompleted={(id) => this.taskStatus(id)}
-            onDeleted={(id) => this.deleteTask(id)} />
-          <Footer 
-            numLeft={numLeft} 
+            onDeleted={(id) => this.deleteTask(id)}
+          />
+          <Footer
+            numLeft={numLeft}
             clearCompleted={() => this.clearCompleted()}
             filter={filter}
-            onFilterChange={this.onFilterChange} />
+            onFilterChange={this.onFilterChange}
+          />
         </section>
       </section>
-    );
+    )
   }
 }
